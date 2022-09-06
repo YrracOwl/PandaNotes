@@ -82,6 +82,7 @@
   <!-- <script type ="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
   <link href="src/context-menu.min.css" rel="stylesheet" />
   <script type ="text/javascript" src="src/context-menu.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
   <script>
   $(document).ready(function() {
     "use strict";
@@ -132,67 +133,207 @@
   </script>
 
   <script>
+    const mark_h1 = "# 标题";
+    const mark_h2 = "## 标题";
+    const mark_h3 = "### 标题";
+    const mark_ol = "1. 第一个\n1. 第二个\n1. 第三个\n\n";
+    const mark_ul = "- 第一个\n* 第二个\n+ 第三个\n\n";
+    const mark_todo = `
+[x] 第一级待办
+
+[ ] 第一级待办
+
+ [ ] 子待办
+ 
+ [x] ~~同级子待办，用删除线修饰~~~
+
+- [ ] 也可以用这样的方式
+ - [x] 不空行就是连续的子待办
+ - [ ] 你看是吧
+
+
+`;
+    const mark_table = `
+    Maine | Iowa | Colorado 
+-------|------|----------
+   1   |  4   |   10
+  ME   |  IA  |   CO
+ Blue  | Red  | Brown
+[Table [states]: Caption with label.]
+
+`;
+    const mark_image = `![Figure [numbers]: A picture of a robot](robot.jpg)`;
+    const mark_link = `[hyperlink](https://example.com)`;
+    const mark_refs = `
+Markdeep also supports footnotes, endnotes [^syntax], and citations
+[#Kajiya86] using a similar syntax. The actual notes and bibliography
+may be placed at the bottom of the document:
+
+~~~~~~~~~~~~~~~~none
+    [#Kajiya86]: James T. Kajiya. 1986 ...
+
+    [^syntax]: Endnotes look like ...
+~~~~~~~~~~~~~~~~
+
+Multiple citations (but not footnotes) may be included within brackets:
+
+~~~~~~~~~~~~~~~~~~none
+...the early Monte Carlo rendering methods [#Cook84, #Kajiya86].
+~~~~~~~~~~~~~~~~~~
+
+    [#Kajiya86]: James T. Kajiya. 1986. The Rendering Equation. 
+In _Proceedings of Computer Graphics and Interactive Techniques 
+(SIGGRAPH '86)_, ACM, 143-150. http://dx.doi.org/10.1145/15922.15902
+
+
+[^syntax]: Endnotes look like reference-style links with an empty text
+field. Endnotes may not contain multiple paragraphs (sorry, David
+Foster Wallace), although they may refer to _other_ endnotes.
+
+`;
+    const mark_definition = `
+Apple
+:   Pomaceous fruit of plants of the genus Malus in 
+    the family Rosaceae.
+
+    Multiple paragraphs are supported.
+
+Orange
+:   The fruit of an evergreen tree of the genus Citrus.
+
+    - Can also
+    - Put lists
+    - In definitions
+
+Definition lists with short definitions are formatted more tersely:
+
+Grapes
+: Available in purple ("red") and green ("white") varieties.
+
+Bananas
+: Only yellow.
+
+`;
+    const mark_calendar = `
+2022-01-01: 日程1
+ - 待办1
+ - 待办2
+
+2022-01-10: 日程2
+ - 待办1
+ - 待办2
+
+2022-01-25: 日程3
+ - 待办1
+ - 待办2
+
+2022-02-21: 游玩
+ **可能去道观看看**
+
+
+`;
+  </script>
+
+  <script>
     var myMenu = [{
         // Menu Icon. 
         // This example uses Font Awesome Iconic Font.
-        icon: 'fa fa-home',   
+        icon: '',   
 
         // Menu Label
-        label: 'Homepage', 
+        label: '插入标题 <i class="ri-h-1"></i>', 
 
         // Callback
         action: function(option, contextMenuIndex, optionIndex) {}, 
 
         // An array of submenu objects
-        submenu: null,
-
+        submenu: [
+          {
+          // sub menus
+          icon: '',  
+          label: '<i class="ri-h-1"></i> 一级标题',  
+          action: function(option, contextMenuIndex, optionIndex) {
+            insertTxt(mark_h1);
+          }, 
+          submenu: null,  
+          disabled: false  
+          },
+          {
+          // sub menus
+          icon: '',  
+          label: '<i class="ri-h-2"></i> 二级标题',  
+          action: function(option, contextMenuIndex, optionIndex) {
+            insertTxt(mark_h2);
+          }, 
+          submenu: null,  
+          disabled: false  
+          },
+          {
+          // sub menus
+          icon: '',  
+          label: '<i class="ri-h-3"></i> 三级标题',  
+          action: function(option, contextMenuIndex, optionIndex) {
+            insertTxt(mark_h3);
+          }, 
+          submenu: null,  
+          disabled: false  
+          },
+        ],
         // is disabled?
         disabled: false   //Disabled status of the option
       },
       {
-        icon: 'fa fa-user', 
-        label: 'Profile',  
-        action: function(option, contextMenuIndex, optionIndex) {}, 
+        icon: '', 
+        label: '<i class="ri-list-unordered"></i> 插入无序列表 ',  
+        action: function(option, contextMenuIndex, optionIndex) {insertTxt(mark_ul);}, 
         submenu: null, 
         disabled: false 
       },
       {
-        icon: 'fa fa-envelope', 
-        label: 'Contact', 
-        action: function(option, contextMenuIndex, optionIndex) {},
+        icon: '', 
+        label: '<i class="ri-list-ordered"></i> 插入有序列表', 
+        action: function(option, contextMenuIndex, optionIndex) {insertTxt(mark_ol);},
+        submenu: null,  
+        disabled: false  
+      },
+      // {
+      //   //Menu separator
+      //   separator: true   
+      // },
+      {
+        icon: '', 
+        label: '<i class="ri-task-line"></i> 插入待办', 
+        action: function(option, contextMenuIndex, optionIndex) {insertTxt(mark_todo);},
         submenu: null,  
         disabled: false  
       },
       {
-        //Menu separator
-        separator: true   
+        icon: '', 
+        label: '<i class="ri-table-2"></i> 插入表格', 
+        action: function(option, contextMenuIndex, optionIndex) {insertTxt(mark_table);},
+        submenu: null,  
+        disabled: false  
       },
       {
-        icon: 'fa fa-share', 
-        label: 'Social Share', 
-        action: function(option, contextMenuIndex, optionIndex) {},
-        submenu: [{ // sub menus
-          icon: 'fa fa-facebook',  
-          label: '<a href="https://www.jqueryscript.net/tags.php?/Facebook/">Facebook</a>',  
-          action: function(option, contextMenuIndex, optionIndex) {}, 
-          submenu: null,  
-          disabled: false  
-        },
-        {
-          icon: 'fa fa-<a href="https://www.jqueryscript.net/tags.php?/twitter/">twitter</a>',  
-          label: 'Twitter', 
-          action: function(option, contextMenuIndex, optionIndex) {}, 
-          submenu: null,  
-          disabled: false  
-        },
-        {
-          icon: 'fa fa-google-plus',
-          label: 'Google Plus',  
-          action: function(option, contextMenuIndex, optionIndex) {}, 
-          submenu: null,  
-          disabled: false  
-        }], 
-        disabled: false
+        icon: '', 
+        label: '<i class="ri-sticky-note-line"></i> 插入引用', 
+        action: function(option, contextMenuIndex, optionIndex) {insertTxt(mark_refs);},
+        submenu: null,  
+        disabled: false  
+      },
+      {
+        icon: '', 
+        label: '<i class="ri-file-paper-2-line"></i> 插入定义', 
+        action: function(option, contextMenuIndex, optionIndex) {insertTxt(mark_refs);},
+        submenu: null,  
+        disabled: false  
+      },
+      {
+        icon: '', 
+        label: '<i class="ri-calendar-todo-fill"></i> 插入日程', 
+        action: function(option, contextMenuIndex, optionIndex) {insertTxt(mark_calendar);},
+        submenu: null,  
+        disabled: false  
       },
     ];
 
