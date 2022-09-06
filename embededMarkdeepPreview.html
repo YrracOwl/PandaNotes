@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+  <meta charset="utf-8">
+  <style>
+    html,body {
+      height:99%;
+      /* background-color: #F0F0F0; */
+    }
+    main {
+      height: 99%;
+      overflow-y: hidden;
+    }
+    #main {
+      display: flex;
+      flex-flow: row;
+      width: 100%;
+    }
+    #markdeep_input {
+        flex: 1 1 45%;
+        width: 225px;
+        height: 97%;
+        font-family: monospace;
+        margin-right: 10px;
+        font-size: 20px;
+    }
+    #preview {
+      flex: 1 1 55%;
+      width: 275px;
+    }
+    #markdeep_preview {
+      height: 100%;
+      /* width: 100%; */
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 10px;
+    }
+
+    .md p {
+        font-size: inherit;
+        font-weight: normal;
+        margin: 0 0 10px;
+    }
+
+    .md h1, .md h2, .md h3 {
+        margin-top: 0;
+        padding-top: 0;
+    }
+
+    .md h1:before, .md h2:before, .md h3:before {
+        display: none;
+    }
+
+    .md h1 {
+        font-size: 21px;
+    }
+
+    .md h2 {
+        font-size: 18px;
+    }
+
+    .md h3 {
+        font-size: 16px;
+    }
+  </style>
+  <style>
+    .custom-context-menu {
+      position: fixed;
+      border: 2px solid #ccc;
+      list-style: none;
+      padding: 4px 0;
+      border-radius: 4px;
+      box-shadow: 0px 2px 6px 2px #ddd;
+    }
+    .custom-context-menu.hidden {
+      display: none;
+    }
+
+    .custom-context-menu li {
+      padding: 8px 12px;
+      border-bottom: 1px solid #f0f2f5;
+      user-select: none;
+      transition: all 0.1s;
+    }
+    .custom-context-menu li:last-child {
+        border-bottom: none;
+      }
+
+    .custom-context-menu li:hover {
+        cursor: pointer;
+        background-color: #0170fe;
+        color: #fff;
+      }
+
+    .custom-context-menu li:active {
+        background-color: #f0f2f7;
+      }
+  </style>
+</head>
+<body>
+  <main id="main">
+    <textarea id='markdeep_input'></textarea>
+    <section id="preview" >
+      <div id="markdeep_preview"></div>
+      <!-- <iframe id="markdeep_preview" frameborder="0"></iframe> -->
+    </section>
+  </main>
+  
+  <script>window.markdeepOptions = {mode: 'script'};</script>
+  <script type ="text/javascript" src="jquery.min.js"></script>
+  <!-- <script type ="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script> -->
+  <script type ="text/javascript" src="markdeep.min.js"></script>
+  <!-- <script type ="text/javascript" src="https://casual-effects.com/markdeep/latest/markdeep.min.js"></script> -->
+  <script type ="text/javascript" src="MathJax.js"></script>
+  <!-- <script type ="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+  <script>
+  $(document).ready(function() {
+    "use strict";
+    document.head.innerHTML = window.markdeep.stylesheet() + document.head.innerHTML;
+
+    $('#markdeep_input').on("change keyup paste", function() {
+      var input = $('#markdeep_input').val() + "\n";
+      $('#markdeep_preview').html(window.markdeep.format(input));  // <----------- magic
+      postprocessMarkdeep();
+    });
+
+  });
+
+  function postprocessMarkdeep() {
+    // for some reason, markdeep creates an additional, superflous <p> tag right
+    // at the beginning, so let's get rid of that
+    $('.markdeep .md > p:first-child').hide();
+
+    // anchors mess up the spacing, so purge them too
+    $('.markdeep .md a.target').hide();
+
+    // tell mathjax to render math
+    $('.markdeep').each(function() {
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub, $(this).get()]);
+    });
+  }
+  </script>
+  <script>
+    function saveMD() {
+      var MDtext = $('#markdeep_input').val();
+      // console.log(MDtext);
+      return MDtext;
+    };
+
+    function initText(strs) {
+      $('#markdeep_input').text(strs);
+      var input = $('#markdeep_input').val() + "\n";
+      $('#markdeep_preview').html(window.markdeep.format(input));  // <----------- magic
+      postprocessMarkdeep();
+    };
+
+    function insertTxt(strs) {
+      document.getElementById("markdeep_input").value = $('#markdeep_input').val() + "\n" + strs + "\n";
+      var input = $('#markdeep_input').val() + "\n";
+      $('#markdeep_preview').html(window.markdeep.format(input));  // <----------- magic
+      postprocessMarkdeep();
+    };
+  </script>
+
+  <script>
+    /**
+     * options:
+     * {
+     *  menus:[{
+     *    name: string,
+     *    onClick: Function
+     *  }],
+     * }
+     */
+    const ContextMenu = function (options) {
+      let instance;
+
+      function createMenu() {
+        const ul = document.createElement("ul");
+        ul.classList.add("custom-context-menu");
+        const { menus } = options;
+        if (menus && menus.length > 0) {
+          for (let menu of menus) {
+            const li = document.createElement("li");
+            li.textContent = menu.name;
+            li.onclick = menu.onClick;
+            ul.appendChild(li);
+          }
+        }
+        const body = document.querySelector("body");
+        body.appendChild(ul);
+        return ul;
+      }
+
+      return {
+        getInstance: function () {
+          if (!instance) {
+            instance = createMenu();
+          }
+          return instance;
+        },
+      };
+    };
+
+    const contextMenu = ContextMenu({
+      menus: [
+        {
+          name: "插入一级标题",
+          onClick: function (e) {
+            insertTxt("# 标题")
+          },
+        },
+        {
+          name: "插入二级标题",
+          onClick: function (e) {
+            insertTxt("## 标题");
+          },
+        },
+        {
+          name: "插入三级标题",
+          onClick: function (e) {
+            insertTxt("### 标题");
+          },
+        },
+        {
+          name: "插入无序列表",
+          onClick: function (e) {
+            insertTxt("- 无序列表，标记后面有空格\n- 可使用的标记有(-,*,+)\n- 可以嵌套使用\n\n");
+          },
+        },
+        {
+          name: "插入有序列表",
+          onClick: function (e) {
+            insertTxt("1. 有序列表，标记后面有空格\n1. 标记只要是数字即可\n2. 可以嵌套使用\n\n");
+          },
+        },
+        {
+          name: "插入链接",
+          onClick: function (e) {
+            insertTxt("[超链接](https://example.com)");
+          },
+        },
+        {
+          name: "插入待办",
+          onClick: function (e) {
+            insertTxt("[ ] 待办1\n\n[ ] 同级待办\n\n [x] 已完成子待办\n\n [ ] 同级子待办\n\n[x] ~~可以用删除线修饰~~\n[ ] 如果不空行\n[ ] 那么就是连续子待办\n\n");
+          },
+        },
+        {
+          name: "插入表格",
+          onClick: function (e) {
+            var tableStr = `
+Maine | Iowa | Colorado 
+-------|------|----------
+   1   |  4   |   10
+  ME   |  IA  |   CO
+ Blue  | Red  | Brown
+[Table [states]: Caption with label.]`;
+            insertTxt(tableStr);
+          },
+        },
+        {
+          name: "插入图像",
+          onClick: function (e) {
+            insertTxt("![Figure [robot]: A picture of a robot](robot.jpg)");
+          },
+        },
+        {
+          name: "插入数字电路",
+          onClick: function (e) {
+            var circuitDigital = `
+Digital Circuits
+--------------------------------------------------------------------------------
+
+*************************************************************************************************
+*                                 ____                      *                                   *
+*                                |    |_____.---.           |                                   *
+*                                o     _____|    )----------)-------.                           *
+*                               / \   |     '---'           |     __|__                         *
+*                              /___\  |                     |     \   /                         *
+*                                |    '-------------.       |      \ /                          *
+*              A ----------------'                  |       |       o                           *
+*                   .-------------------.     o-----)-------'       |                           *
+*                   |                   |___.---.   |               |___.---.                   *
+*              B ---*---.__.---.         ___|    )--*--.__..---.     ____)   )----- Y           *
+*                        __|    o----*--'   '---'    ______))   )---'   '---'                   *
+*              C -------'  '---'     |              |     ''---'                                *
+*                                    |              o                                           *
+*                                    |             / \                                          *
+*                                    |            /___\                                         *
+*                                    |              |                                           *
+*                                    '--------------'                                           *
+*************************************************************************************************`;
+            insertTxt(circuitDigital);
+          },
+        },
+        {
+          name: "插入模拟电路",
+          onClick: function (e) {
+            var circuitAnalog = `
+Analog Circuits
+--------------------------------------------------------------------------------
+
+*************************************************
+*                                               *
+*             k                  x₂             *
+*     .---.╱╲╱╲╱╲╱'---.    .----->              *
+*     |               |   .+.                   *
+* ----+               *--+ m₂+--->              *
+*     |      ---.     |   '-'    x₁             *
+*     '--------┫+-----'                         *
+*            ---'                               *
+*              d                                *
+*                                               *
+*************************************************`;
+            insertTxt(circuitAnalog);
+          },
+        },
+        {
+          name: "插入甘特图",
+          onClick: function (e) {
+            var GanttChart = `
+Gantt Chart
+--------------------------------------------------------------------------------
+
+*************************************************************************************************
+*            ║ Preproduction┆       Alpha┆             RC1┆
+* ═══════════╬══════════════╪════════════╪════════════════╪══
+* Story      ║    ▆▆▆▆▆▆▆▆  ┆           ▆┆▆▆▆             ┆
+* Concept Art║       └▆▆▆▆▆▆┆▆▆▆┐        ┆                ┆
+* Modeling   ║              ┆   └▆▆▆▆▆▆▆▆┆▆▆▆▆▆▆▆         ┆
+* Rigging    ║              ┆        └▆▆▆┆▆▆▆▆▆▆▆▆▆▆▆▆    ┆
+* Mechanics  ║        ▆▆▆▆▆▆┆▆▆┐         ┆     ░░░░▆▆▆▆   ┆
+* Engine Code║   ▆▆▆▆▆▆▆┐ │ ┆  └────────▆┆▆▆▆▆▆▆▆▆▆▆▆▆▆   ┆
+* Game Code  ║          └─┴▆┆▆▆▆▆▆▆▆▆▆▆▆▆┆▆▆▆▆ ░░░░   ▆   ┆
+*            ║              ┆            ┆    Freeze      ┆
+*************************************************************************************************`;
+            insertTxt(GanttChart);
+          },
+        },
+      ],
+    });
+
+    function showMenu(e) {
+      e.preventDefault();
+      const menus = contextMenu.getInstance();
+      menus.style.top = `${e.clientY}px`;
+      menus.style.left = `${e.clientX}px`;
+      menus.classList.remove("hidden");
+    }
+
+    function hideMenu(event) {
+      const menus = contextMenu.getInstance();
+      menus.classList.add("hidden");
+    }
+
+    document.addEventListener("contextmenu", showMenu);
+    document.addEventListener("click", hideMenu);
+
+  </script>
+
+</body>
