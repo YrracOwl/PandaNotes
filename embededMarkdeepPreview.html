@@ -151,7 +151,6 @@
  - [x] 不空行就是连续的子待办
  - [ ] 你看是吧
 
-
 `;
     const mark_table = `
     Maine | Iowa | Colorado 
@@ -241,7 +240,7 @@ Bananas
         icon: '',   
 
         // Menu Label
-        label: '插入标题 <i class="ri-h-1"></i>', 
+        label: '<i class="ri-h-1"></i> 插入标题', 
 
         // Callback
         action: function(option, contextMenuIndex, optionIndex) {}, 
@@ -296,10 +295,20 @@ Bananas
         submenu: null,  
         disabled: false  
       },
-      // {
-      //   //Menu separator
-      //   separator: true   
-      // },
+      {
+        icon: '', 
+        label: '<i class="ri-links-line"></i> 插入链接', 
+        action: function(option, contextMenuIndex, optionIndex) {insertTxt(mark_link);},
+        submenu: null,  
+        disabled: false  
+      },
+      {
+        icon: '', 
+        label: '<i class="ri-image-add-line"></i> 插入图像', 
+        action: function(option, contextMenuIndex, optionIndex) {insertTxt(mark_image);},
+        submenu: null,  
+        disabled: false  
+      },
       {
         icon: '', 
         label: '<i class="ri-task-line"></i> 插入待办', 
@@ -332,6 +341,17 @@ Bananas
         icon: '', 
         label: '<i class="ri-calendar-todo-fill"></i> 插入日程', 
         action: function(option, contextMenuIndex, optionIndex) {insertTxt(mark_calendar);},
+        submenu: null,  
+        disabled: false  
+      },
+      {
+        //Menu separator
+        separator: true   
+      },
+      {
+        icon: '', 
+        label: '<i class="ri-external-link-line"></i> <a href="https://casual-effects.com/markdeep/">参考语法</a>', 
+        action: function(option, contextMenuIndex, optionIndex) {},
         submenu: null,  
         disabled: false  
       },
