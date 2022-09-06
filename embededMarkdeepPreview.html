@@ -64,37 +64,208 @@
     }
   </style>
   <style>
-    .custom-context-menu {
-      position: fixed;
-      border: 2px solid #ccc;
+    :root {
+      --bg: #24262d;
+      --text: #dfe3ff;
+      --color1: #673ab7;
+      --color2: #3f51b5;
+      --divider: rgba(255,255,255,0.16);
+    }
+
+    .context {
+      font-size: 0.875rem;
+      color: var(--text);
       list-style: none;
-      padding: 4px 0;
-      border-radius: 4px;
-      box-shadow: 0px 2px 6px 2px #ddd;
+      margin: 0;
+      padding: 0.05em 0.25em;
+      border: 1px solid transparent;
+      border-right-color: rgba(255, 255, 255, 0.15);
+      border-bottom-color: rgba(255, 255, 255, 0.15);
+      border-left-color: rgba(0, 0, 0, 0.15);
+      border-top-color: rgba(0, 0, 0, 0.15);
+      border-radius: 5px;
+      position: absolute;
+      min-width: 16em;
+      z-index: 1;
+      background: linear-gradient(145deg, var(--color1), var(--color2));
+      box-shadow: 2px 5px 16px -4px #141321;
+      will-change: transform, opacity, filter;
+      transition: transform, opacity, visibility, filter;
+      transition-duration: 0.5s, 0.2s, 0.4s, 0.3s;
+      transition-delay: 0.1s, 0s, 0.4s, 0.2s;
+      transition-timing-function: ease;
+      transform: rotate3d(-1, -1, 0, 30deg) scale(1);
+      transform-origin: 0 0;
+      opacity: 0;
+      visibility: hidden;
+      filter: blur(6px);
     }
-    .custom-context-menu.hidden {
-      display: none;
+    .context, .context * {
+      -webkit-user-select: none;
+        -moz-user-select: none;
+          -ms-user-select: none;
+              user-select: none;
+      cursor: default;
+    }
+    .context.is-visible {
+      opacity: 1;
+      transform: none;
+      transition-delay: 0s, 0s, 0s, 0s;
+      visibility: visible;
+      filter: none;
+    }
+    .context.sub {
+      background: var(--color2);
+      width: -webkit-max-content;
+      width: -moz-max-content;
+      width: max-content;
+      min-width: 10em;
+      left: 100%;
+      top: -0.4em;
+      transform: translateX(-0.7em);
+      transition: transform, opacity, width, min-width, visibility;
+      transition-timing-function: ease;
+      transition-duration: 0.4s, 0.25s, 0.15s, 0.15s, 0.01s;
+      transition-delay: 0.4s, 0.25s, 0.3s, 0.3s, 0.35s;
+      overflow: hidden;
+      filter: none;
+    }
+    .context.sub .f {
+      transform: translateX(-2.25em);
+    }
+    .context.sub.oppositeX {
+      right: 100%;
+      left: auto;
+      transform: translateX(0.7em);
+    }
+    .context.sub.oppositeY {
+      top: auto;
+      bottom: -0.4em;
+    }
+    .context > li {
+      padding: 0.3em 1.5em 0.35em 2.8em;
+      border-radius: 3px;
+      position: relative;
+    }
+    .context > li:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      border-radius: 3px;
+      z-index: -1;
+      background-color: rgba(97, 97, 97, 0.37);
+      mix-blend-mode: color-dodge;
+      transition: opacity 0.15s cubic-bezier(0.55, 0.06, 0.68, 0.19);
+      opacity: 0;
+    }
+    .context > li.hilight {
+      font-weight: 500;
+      padding-bottom: 0.5em;
+      color: white;
+    }
+    .context > li:not(.context > li.nope):hover {
+      color: white;
+    }
+    .context > li:not(.context > li.nope):hover:before {
+      opacity: 1;
+      transition: opacity 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .context > li:not(.context > li.nope):hover .sub {
+      opacity: 1;
+      transform: translateX(0);
+      transition-delay: 0.2s, 0.25s, 0.2s, 0.2s, 0s;
+      border-radius: 0 3px 3px 3px;
+      visibility: visible;
+    }
+    .context > li:hover > .f, .context > li.hilight > .f {
+      opacity: 1;
+    }
+    .context > li:last-child {
+      margin-bottom: 0.25em;
+    }
+    .context > li:first-child {
+      margin-top: 0.25em;
+    }
+    .context > li.nope {
+      color: rgba(255, 255, 255, 0.3);
+    }
+    .context > li.active {
+      -webkit-animation: flash 0.5s ease 1;
+              animation: flash 0.5s ease 1;
+    }
+    .context > li:nth-of-type(1) {
+      margin-top: 0.5em;
+    }
+    .context > li .f {
+      opacity: 0.5;
+      transition: all 0.2s ease;
+    }
+    .context > li i {
+      font-style: normal;
+      text-decoration: underline;
+      -webkit-text-decoration-color: rgba(255, 255, 255, 0.35);
+              text-decoration-color: rgba(255, 255, 255, 0.35);
+    }
+    .context .div {
+      border-bottom: 1px solid var(--divider);
+      padding: 0;
+      margin-top: 0.3em;
+      margin-bottom: 0.35em;
+    }
+    .context .f {
+      font-style: normal;
+      position: absolute;
+      transform: translateX(-2.4em);
+    }
+    .context .f[class*=chevron-right] {
+      right: 0;
+      transform: none;
     }
 
-    .custom-context-menu li {
-      padding: 8px 12px;
-      border-bottom: 1px solid #f0f2f5;
-      user-select: none;
-      transition: all 0.1s;
+    .f.f-circle {
+      fill: red;
     }
-    .custom-context-menu li:last-child {
-        border-bottom: none;
-      }
 
-    .custom-context-menu li:hover {
-        cursor: pointer;
-        background-color: #0170fe;
-        color: #fff;
-      }
+    span.size {
+      position: absolute;
+      font-size: 0.675em;
+      left: 1.2em;
+      top: 0.8em;
+      text-shadow: aliceblue;
+    }
 
-    .custom-context-menu li:active {
-        background-color: #f0f2f7;
+    @-webkit-keyframes flash {
+      0% {
+        background: rgba(255, 255, 255, 0);
       }
+      7% {
+        background: rgba(255, 255, 255, 0.2);
+      }
+      14% {
+        background: rgba(255, 255, 255, 0);
+      }
+      21% {
+        background: rgba(255, 255, 255, 0.3);
+      }
+    }
+
+    @keyframes flash {
+      0% {
+        background: rgba(255, 255, 255, 0);
+      }
+      7% {
+        background: rgba(255, 255, 255, 0.2);
+      }
+      14% {
+        background: rgba(255, 255, 255, 0);
+      }
+      21% {
+        background: rgba(255, 255, 255, 0.3);
+      }
+    }
   </style>
 </head>
 <body>
@@ -105,7 +276,43 @@
       <!-- <iframe id="markdeep_preview" frameborder="0"></iframe> -->
     </section>
   </main>
-  
+  <ul class="context">
+    <li class="top">
+      <a href="https://www.jqueryscript.net/menu/">Menu</a> 1
+      <ul class="context sub"> 
+        <li title="Chosen: Red">
+          Menu 1-1
+        </li>
+        <li title="Chosen: Xtra Large">
+          Menu 1-2
+        </li>
+      </ul>
+    </li>
+    <li class="hilight">
+      Menu 2 (Highlighted)
+    </li>
+    <li>
+      Menu 3
+    </li>
+    <!-- Separator -->
+    <li class="div"></li>
+    <li>
+      Menu 4
+      <ul class="context sub"> 
+        <li class="hilight">
+          Menu 4-1
+        </li>
+        <li>
+          Menu 4-2
+        </li>
+      </ul>
+    </li>
+  </ul>
+  <div class="colors">
+    <h4>Theme Switcher</h4>
+    <input type="color" name="c1" id="c1" value="#673ab7"/>
+    <input type="color" name="c2" id="c2" value="#3f51b5"/>
+  </div>
   <script>window.markdeepOptions = {mode: 'script'};</script>
   <script type ="text/javascript" src="jquery.min.js"></script>
   <!-- <script type ="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script> -->
@@ -162,7 +369,7 @@
     };
   </script>
 
-  <script>
+  <!-- <script>
     /**
      * options:
      * {
@@ -268,7 +475,7 @@ Maine | Iowa | Colorado
         {
           name: "插入数字电路",
           onClick: function (e) {
-            var circuitDigital = `
+            var circuitDigital = ```
 Digital Circuits
 --------------------------------------------------------------------------------
 
@@ -290,14 +497,14 @@ Digital Circuits
 *                                    |            /___\                                         *
 *                                    |              |                                           *
 *                                    '--------------'                                           *
-*************************************************************************************************`;
+*************************************************************************************************```;
             insertTxt(circuitDigital);
           },
         },
         {
           name: "插入模拟电路",
           onClick: function (e) {
-            var circuitAnalog = `
+            var circuitAnalog = ```
 Analog Circuits
 --------------------------------------------------------------------------------
 
@@ -312,14 +519,14 @@ Analog Circuits
 *            ---'                               *
 *              d                                *
 *                                               *
-*************************************************`;
+*************************************************```;
             insertTxt(circuitAnalog);
           },
         },
         {
           name: "插入甘特图",
           onClick: function (e) {
-            var GanttChart = `
+            var GanttChart = ```
 Gantt Chart
 --------------------------------------------------------------------------------
 
@@ -334,7 +541,7 @@ Gantt Chart
 * Engine Code║   ▆▆▆▆▆▆▆┐ │ ┆  └────────▆┆▆▆▆▆▆▆▆▆▆▆▆▆▆   ┆
 * Game Code  ║          └─┴▆┆▆▆▆▆▆▆▆▆▆▆▆▆┆▆▆▆▆ ░░░░   ▆   ┆
 *            ║              ┆            ┆    Freeze      ┆
-*************************************************************************************************`;
+*************************************************************************************************```;
             insertTxt(GanttChart);
           },
         },
@@ -357,6 +564,113 @@ Gantt Chart
     document.addEventListener("contextmenu", showMenu);
     document.addEventListener("click", hideMenu);
 
-  </script>
+  </script> -->
+  <script>
+    $(function () {
+      var $doc = $(document),
+        $context = $(".context:not(.sub)"),
+        $c1 = $("#c1"),
+        $c2 = $("#c2");
 
+      $doc.on("contextmenu", function (e) {
+
+        var $window = $(window),
+          $sub = $context.find(".sub");
+
+        $sub.removeClass("oppositeX oppositeY");
+
+        e.preventDefault();
+
+        var w = $context.width();
+        var h = $context.height();
+        var x = e.clientX;
+        var y = e.clientY;
+        var ww = $window.width();
+        var wh = $window.height();
+        var padx = 30;
+        var pady = 20;
+        var fx = x;
+        var fy = y;
+        var hitsRight = (x + w >= ww - padx);
+        var hitsBottom = (y + h >= wh - pady);
+
+        if (hitsRight) {
+          fx = ww - w - padx;
+        }
+
+        if (hitsBottom) {
+          fy = wh - h - pady;
+        }
+
+        $context
+          .css({
+            left: fx - 1,
+            top: fy - 1
+          });
+
+        var sw = $sub.width();
+        var sh = $sub.height();
+        var sx = $sub.offset().left;
+        var sy = $sub.offset().top;
+        var subHitsRight = (sx + sw - padx >= ww - padx);
+        var subHitsBottom = (sy + sh - pady >= wh - pady);
+
+        if (subHitsRight) {
+          $sub.addClass("oppositeX");
+        }
+
+        if (subHitsBottom) {
+          $sub.addClass("oppositeY");
+        }
+
+        $context.addClass("is-visible");
+
+        $doc.on("mousedown", function (e) {
+
+          var $tar = $(e.target);
+          console.log($tar)
+
+          if (!$tar.is($context) &&
+            !$tar.closest(".context").length &&
+            !$tar.is($c1) &&
+            !$tar.is($c2)) {
+
+            $context.removeClass("is-visible");
+            $doc.off(e);
+
+          }
+
+        });
+
+      });
+
+      $context.on("mousedown touchstart", "li:not(.nope)", function (e) {
+
+        if (e.which === 1) {
+
+          var $item = $(this);
+
+          $item.removeClass("active");
+
+          setTimeout(function () {
+            $item.addClass("active");
+          }, 10);
+
+        }
+
+      });
+
+      $c1.on("input change", function (e) {
+        var color = $(this).val();
+        document.body.style.setProperty("--color1", color);
+      });
+
+      $c2.on("input change", function (e) {
+        var color = $(this).val();
+        document.body.style.setProperty("--color2", color);
+      });
+
+
+      });
+  </script>
 </body>
