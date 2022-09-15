@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project ver="10" name="PandaNotes" libEmbed="true" icon="res\panda.ico" ui="win" output="PandaNotes.exe" CompanyName="单位名称" FileDescription="一个本地的markdown编辑器" LegalCopyright="Copyright (C) 作者 2022" ProductName="PandaNotes" InternalName="PandaNotes" FileVersion="0.0.0.37" ProductVersion="0.0.0.37" publishDir="\PandaNotes\" dstrip="false" local="false" ignored="false">
+	<file name="main.aardio" path="main.aardio" comment="main.aardio"/>
+	<folder name="资源文件" path="res" embed="true" local="false" ignored="false">
+		<file name="panda.ico" path="res\panda.ico" comment="res\panda.ico"/>
+		<file name="panda.png" path="res\panda.png" comment="res\panda.png"/>
+		<file name="spy.cur" path="res\spy.cur" comment="res\spy.cur"/>
+	</folder>
+	<folder name="窗体文件" path="dlg" comment="目录" embed="true" local="false" ignored="false">
+		<file name="DoubleColsWebview2.aardio" path="dlg\DoubleColsWebview2.aardio" comment="dlg\DoubleColsWebview2.aardio"/>
+		<file name="markdeepPreview.aardio" path="dlg\markdeepPreview.aardio" comment="dlg\markdeepPreview.aardio"/>
+		<file name="ScreenCapture.aardio" path="dlg\ScreenCapture.aardio" comment="dlg\ScreenCapture.aardio"/>
+	</folder>
+</project>

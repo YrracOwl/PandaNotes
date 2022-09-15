@@ -1,0 +1,428 @@
+import fonts.fontAwesome;
+import win.ui;
+/*DSG{{*/
+mainForm = win.form(text="PandaNotes";right=183;bottom=175;border="none";clipch=1;edge=1)
+mainForm.add(
+btnCapture={cls="plus";left=24;top=120;right=56;bottom=152;align="left";bgcolor=-5197169;border={radius=30};font=LOGFONT(h=-16);iconStyle={align="left";font=LOGFONT(h=-21;name='FontAwesome');padding={left=3;top=3}};iconText='\uF0DB';notify=1;textPadding={left=39};z=5};
+btnClose={cls="plus";left=152;top=0;right=184;bottom=32;align="left";border={radius=30};font=LOGFONT(h=-13);iconStyle={align="left";font=LOGFONT(h=-21;name='FontAwesome');padding={left=6;top=2}};iconText='\uF00D';notify=1;textPadding={left=39};z=1};
+btnDocs={cls="plus";text="按钮";left=80;top=140;right=112;bottom=172;align="left";bgcolor=-5197169;border={radius=30};font=LOGFONT(h=-13);iconStyle={align="left";font=LOGFONT(h=-21;name='FontAwesome');padding={left=3;top=3}};iconText='\uF044';notify=1;textPadding={left=39};z=6};
+btnSettings={cls="plus";left=143;top=113;right=175;bottom=145;align="left";bgcolor=-5197169;border={radius=30};font=LOGFONT(h=-16);iconStyle={align="left";font=LOGFONT(h=-23;name='FontAwesome');padding={left=3;top=3}};iconText='\uF013';notify=1;textPadding={left=39};z=3};
+btnSnap={cls="plus";left=0;top=72;right=32;bottom=104;align="left";bgcolor=-5197169;border={radius=30};font=LOGFONT(h=-16);iconStyle={align="left";font=LOGFONT(h=-18;name='FontAwesome');padding={left=3;top=3}};iconText='\uF030';notify=1;textPadding={left=39};z=2};
+btnTopmost={cls="plus";left=8;top=8;right=40;bottom=40;align="left";bgcolor=-5197169;border={radius=30};font=LOGFONT(h=-16);iconStyle={align="left";font=LOGFONT(h=-21;name='FontAwesome');padding={left=6;top=3}};iconText='\uF08D';notify=1;textPadding={left=39};z=4};
+plus={cls="plus";left=32;top=8;right=160;bottom=136;notify=1;z=7}
+)
+/*}}*/
+
+import win.ui.atom 
+var atom,hwnd = mainForm.atom("89CC4142-AFEA-45F4-BA51-797847C63768.CardNote"); 
+if(!atom){
+	win.show(hwnd)
+	return win.setForeground(hwnd); 
+}
+/*
+遮罩与对应代码
+*/
+import winex;
+import mouse;
+import process;
+import process.wmi;
+import win.ui.mask;
+var frmMask = win.ui.mask(mainForm);
+
+import fsys.table;
+configMain = fsys.table("/data/settingMain.table");
+if(!io.exist("/Notes/Pics")){
+	io.createDir("/Notes/Pics")
+}
+mainForm.editPid = null;
+mainForm.enterFromDirect = false;
+mainForm.enterFromOutside = false;
+if(!configMain.chkHex){
+	configMain.chkHex = true;
+}
+
+var numberToString = function(num){
+	if(configMain.chkHex) return string.format("0x%X",num );  
+	return tostring(num)
+}
+
+var getParentHwnd = function(){
+	return tonumber(configMain.editParenHwnd,configMain.chkHex?16:10)
+}
+
+var getOwnerHwnd = function(){
+	return tonumber(configMain.editOwnerHwnd,configMain.chkHex?16:10)
+}
+var validPattern = function(str){
+	if(!#str) return "";
+		
+	var mbs = string.match(str,"[\s\w]*:+[\s\w]*")
+	if(#mbs)
+		return mbs;
+		
+	str = string.replace(str,"(\p)","\\\1") 	
+	str = string.replace(str,"\x+",function(str){
+	 	if(..string.find(str,"\d") ) return "\x+"
+	 	return str;
+	} ) 	
+    
+    str = string.replace(str,"\d+","\\d+") 	
+    return str;
+}
+
+/*
+主窗口图标样式
+*/
+mainForm.btnSnap.skin({
+	background={
+		default=0xFF9ACD32;
+		disabled=0x00CCCCCC;
+		hover=0xFFFFFFFF;
+	};
+	color={
+		default=0xFF000000;
+		disabled=0xFF6D6D6D;
+		hover=0xFFFF0000;
+	}
+})
+
+mainForm.btnCapture.skin({
+	background={
+		default=0xFF9ACD32;
+		disabled=0x00CCCCCC;
+		hover=0xFFFFFFFF;
+	};
+	color={
+		default=0xFF000000;
+		disabled=0xFF6D6D6D;
+		hover=0xFFFF0000;
+	}
+})
+
+mainForm.btnTopmost.skin({
+	background={
+		default=0xFF9ACD32;
+		disabled=0x00CCCCCC;
+		hover=0xFFFFFFFF;
+	};
+	color={
+		default=0xFF000000;
+		disabled=0xFF6D6D6D;
+		hover=0xFFFF0000;
+	}
+})
+
+mainForm.btnSettings.skin({
+	background={
+		default=0xFF9ACD32;
+		disabled=0x00CCCCCC;
+		hover=0xFFFFFFFF;
+	};
+	color={
+		default=0xFF000000;
+		disabled=0xFF6D6D6D;
+		hover=0xFFFF0000;
+	}
+})
+
+mainForm.btnClose.skin({
+	background={
+		default=0xFF9ACD32;
+		disabled=0x00CCCCCC;
+		hover=0xFFFF0000;
+	};
+	color={
+		default=0xFF000000;
+		disabled=0xFF6D6D6D
+	}
+})
+
+mainForm.btnDocs.skin({
+	background={
+		default=0xFF9ACD32;
+		disabled=0x00CCCCCC;
+		hover=0xFFFFFFFF;
+	};
+	color={
+		default=0xFF000000;
+		disabled=0xFF6D6D6D;
+		hover=0xFFFF0000;
+	}
+})
+
+import win.ui.layered;
+win.ui.layered(mainForm);
+
+mainForm.plus.skin({
+	background = {
+		default = "\res\panda.png";
+	}
+})
+//mainForm.btnTopmost.border = {radius=-1}
+tmpBmp = null;
+tmpBmpWidth= null; 
+tmpBmpHeight= null;
+
+mainForm.plus.onMouseDown  = function(wParam,lParam){
+	mainForm.hitCaption(); //允 许点击图标拖动
+}
+
+mainForm.btnClose.oncommand = function(id,event){
+	mainForm.close();// 点击关闭
+}
+
+mainForm.btnTopmost.onStateChange = function(state){
+	if(mainForm.btnTopmost.checked){
+		win.setTopmost(mainForm.hwnd,true)
+		mainForm.btnTopmost.iconColor = 0xFFFF0000;
+	}
+	else {
+		win.setTopmost(mainForm.hwnd,false)
+		mainForm.btnTopmost.iconColor = 0xFF000000;
+	}
+}
+
+/*
+ToolTips设置
+*/
+import win.ui.tooltip; 
+mainForm.tooltipCtrl = win.ui.tooltip( mainForm );//在窗口上创建tooltip控件 
+mainForm.tooltipCtrl.add(
+	btnClose = "关闭应用";
+	btnTopmost = "置顶";
+	btnSettings = "设置";
+	btnCapture = "双栏浏览";
+	btnSnap = "截图";
+	btnDocs = "记笔记"
+)
+
+var frmChildSC = mainForm.loadForm("\dlg\ScreenCapture.aardio");
+
+mainForm.btnSnap.oncommand = function(id,event){
+	// 截屏函数
+	var tmpHwnd = win.getDesktop(); 
+	import mouse.screenArea;
+	var screenArea = mouse.screenArea(tmpHwnd);
+	screenArea.onSelectionChanged = function(rc){
+		import gdip.snap;
+		var bmp = gdip.snap(screenArea.hwnd,rc.xywh());
+		..tmpBmp = bmp.clone();
+		..tmpBmpWidth = bmp.width;
+		..tmpBmpHeight = bmp.height;
+		owner.close();
+	}
+	screenArea.doModal();
+	//win.setTopmost(screenArea.hwnd)
+	frmChildSC.ImgTitle.text = string.random(16);
+	frmChildSC.btnSave.disabled = false;
+	frmChildSC.show();
+	win.setFocus(frmChildSC.ImgTitle.hwnd)
+}
+
+
+/*
+鼠标捕获并打开双栏
+*/
+
+// 窗口信息获取函数
+import process.admin;
+import process.cmdline;
+import raw.pefile;
+function getWindowInfo(hwnd){
+	configMain.editParenHwnd = numberToString(win.getParent(hwnd));
+	configMain.editOwnerHwnd = numberToString(win.getOwner(hwnd));
+	configMain.editHwnd = numberToString(hwnd); 
+	configMain.editClass = win.getClass(hwnd) 
+	configMain.editId = win.getId(hwnd);
+	configMain.chkUnicodeWindow = winex.isUnicode(hwnd);
+	configMain.editHwnd = numberToString(win.getRoot(hwnd))
+	
+	var tid,pid = win.getThreadProcessId(hwnd)
+	configMain.editTid,mainForm.editPid = (tid),(pid);
+	configMain.editPath = process.cmdline(pid);
+	
+	
+	var prcs = process(pid,0x400/*_PROCESS_QUERY_INFORMATION*/|0x10/*_PROCESS_VM_READ*/);
+	if(prcs){
+		configMain.lbProcessInfo = ((_WIN_64 && !prcs.isWow64()) ? "64位" : "32位")
+			+ "/" + (process.admin.isRunAs(prcs) ? "管理权限" : "普通权限");
+		
+		var pid = prcs.getParentId();
+		configMain.editParentPid = pid;	
+		
+		var path = prcs.getPath();
+		
+		if(path && io.exist(path) ){
+			if(path!=mainForm.currentPePath){
+				var pe = raw.pefile(path);
+				if(pe && pe.getClrHeader()){
+					configMain.btnIlSpy = false;
+				}
+				else {
+					configMain.btnIlSpy = true;
+				} 
+			}	
+		}
+		else {
+			configMain.btnIlSpy = true;
+		}
+		
+		mainForm.currentPePath = path;
+		
+		prcs.free();
+	}
+	else {
+		configMain.btnIlSpy = true;
+	}
+	
+	
+	var str = winex.getText(hwnd,50); 
+	if(#str){
+		configMain.editText = string.replace(str,"[\r\n]","")
+	} 
+	else { 
+		configMain.editText = "";
+		
+		if( hwnd != mainForm.lastSpyHwnd
+			&& configMain.chkPassword
+			&& configMain.editClass == "Edit"
+			&& ..win.getStyle(hwnd,0x40000000/*_WS_CHILD*/) 
+			&& !..win.isChild(mainForm.hwnd,hwnd) ){
+			var tid,pid = win.getThreadProcessId(hwnd)
+			var tid2,pid2 = win.getThreadProcessId(mainForm.hwnd);
+			if( pid2 != pid ){ 
+				var prcs = process( pid )
+				if(prcs){ 
+					var tid,pid = win.getThreadProcessId(hwnd);
+					var prcs = process( pid );
+					var getWindowText = prcs.remoteApi("int(addr hwnd,ustring& lpString,int cch)" ,"User32.dll","GetWindowTextW" )
+					if(getWindowText){
+						var len,str = getWindowText(hwnd,100,50);
+						if(len) configMain.editText = str;
+					}
+					prcs.free();
+				}
+			}
+		}
+	}
+	
+	configMain.editStyle =  numberToString(win.getStyle(hwnd) );
+	configMain.editStyleEx =  numberToString(win.getStyleEx(hwnd) );
+	
+	var x,y = mouse.getPos();
+	x,y = win.toClient(hwnd,x,y);
+	configMain.editPoint = ..string.format("%d,%d",x,y)
+	
+	//mainForm.showSampleCode();
+	mainForm.getToplevelWinHwnd();
+	mainForm.lastSpyHwnd = hwnd;
+}
+
+var validPattern = function(str){
+	if(!#str) return "";
+		
+	var mbs = string.match(str,"[\s\w]*:+[\s\w]*")
+	if(#mbs)
+		return mbs;
+		
+	str = string.replace(str,"(\p)","\\\1") 	
+	str = string.replace(str,"\x+",function(str){
+	 	if(..string.find(str,"\d") ) return "\x+"
+	 	return str;
+	} ) 	
+    
+    str = string.replace(str,"\d+","\\d+") 	
+    return str;
+}
+
+//获取顶层窗口
+mainForm.getToplevelWin = function(hwnd){
+	var tmpHwnd = hwnd;
+	// 如果本身父窗口是0x0，那么显示本身；否则进行迭代找到父窗口是0x0的窗口
+	if(win.getParent(tmpHwnd)){
+		while(win.getParent(tmpHwnd)){
+			tmpHwnd = win.getParent(tmpHwnd);
+			getWindowInfo(tmpHwnd);
+		}	
+	}
+	else {
+		getWindowInfo(tmpHwnd);
+	}
+}
+
+mainForm.getToplevelWinHwnd = function(){
+	var hwnd = tonumber(configMain.editHwnd);
+    if(!hwnd) return;
+
+	if( !win.getParent(hwnd) ){
+		if( win.getOwner(hwnd) ){
+			configMain.doubleCols = string.format("winex.waitEx(%d,,""%s"",""%s"")",
+				win.getOwner(hwnd),validPattern(win.getClass(hwnd)),validPattern(winex.getText(hwnd,50)));
+		}
+		else {
+			configMain.doubleCols = string.format("winex.waitVisible(""%s"",,""%s"")",
+				validPattern(winex.getText(hwnd,50)),validPattern(win.getClass(hwnd)));
+		}
+	}
+}
+
+
+// 修饰鼠标表现
+import win.cur;
+var hCursor = win.cur.loadfile("\res\spy.cur") ;
+mainForm.btnCapture.onMouseDown = function(wParam,lParam){
+	win.cur.beginCur();
+	mainForm.btnCapture.capture = true; //激活全局鼠标捕获
+	mainForm.lastSpyHwnd = null;
+}
+// 抬起捕获鼠标
+
+// 子窗口
+var DoubleColsmainForm = win.form(text="CardNotes";right=128;bottom=128;)
+DoubleColsmainForm.show(false);
+
+mainForm.btnCapture.onMouseUp = function(wParam,lParam){
+	mainForm.enterFromOutside = true;
+	
+	mainForm.btnCapture.capture = false;
+	win.cur.endCur();
+	frmMask.show(false);
+	plusleftHwnd = eval(configMain.doubleCols);
+	mainForm.plusleftHwnd = plusleftHwnd;
+	var frmDoubleCols = DoubleColsmainForm.loadForm("\dlg\DoubleColsWebview2.aardio");
+	//var frmDoubleCols = DoubleColsmainForm.loadForm("\dlg\DoubleColsWeblayout.aardio");
+	frmDoubleCols.show(3/*_SW_MAXIMIZE*/);
+}
+
+// 设置窗口回调，监控鼠标捕获开始事件
+var hwndTarget;
+tmid = mainForm.setInterval(
+	function(hwnd,msg,id,tick){
+		if ( win.cur.beginning ){ 
+			var cwp = 0;
+			cwp = cwp | 0x0001/*_CWP_SKIPINVISIBLE*/ | 0x0004/*_CWP_SKIPTRANSPARENT*/ | 0x0002/*_CWP_SKIPDISABLED*/;
+			var x,y = mouse.getPos();
+			hwndTarget = winex.fromPointReal( x,y,cwp );
+			if( frmMask.moveToWindow(hwndTarget) ){
+				mainForm.getToplevelWin(hwndTarget);
+			} 
+		} 
+	},600
+)
+
+mainForm.onClose = function(hwnd,message,wParam,lParam){
+    DoubleColsmainForm.close();
+}
+/*
+主窗口开始渲染
+*/
+
+mainForm.btnDocs.oncommand = function(id,event){
+	mainForm.enterFromDirect = true;
+	var frmDoubleCols = DoubleColsmainForm.loadForm("\dlg\DoubleColsWebview2.aardio");
+	//var frmDoubleCols = DoubleColsmainForm.loadForm("\dlg\DoubleColsWeblayout.aardio");
+	frmDoubleCols.show();
+}
+
+mainForm.show();
+win.loopMessage();

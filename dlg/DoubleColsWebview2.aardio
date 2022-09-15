@@ -1,0 +1,430 @@
+import fonts.fontAwesome;
+import win.ui;
+/*DSG{{*/
+var winform = win.form(text="PandaNotes";right=1919;bottom=1079;acceptfiles=1)
+winform.add(
+btnNew={cls="plus";text="新建笔记(Ctrl+N)";left=776;top=1050;right=919;bottom=1080;align="left";bgcolor=-5197169;db=1;dl=1;font=LOGFONT(h=-13);iconStyle={align="left";font=LOGFONT(h=-13;name='FontAwesome');padding={left=10}};iconText='\uF07C';notify=1;textPadding={left=25};z=12};
+btnOpenHtml={cls="plus";text="浏览Html文件";left=616;top=1050;right=738;bottom=1080;align="left";bgcolor=-5197169;db=1;dl=1;font=LOGFONT(h=-13);iconStyle={align="left";font=LOGFONT(h=-13;name='FontAwesome');padding={left=10}};iconText='\uF282';notify=1;textPadding={left=25};z=11};
+btnOpenMD={cls="plus";text="加载笔记";left=473;top=1050;right=569;bottom=1080;align="left";bgcolor=-5197169;db=1;dl=1;font=LOGFONT(h=-13);iconStyle={align="left";font=LOGFONT(h=-13;name='FontAwesome');padding={left=10}};iconText='\uF019';notify=1;textPadding={left=25};z=4};
+btnSaveHTML={cls="plus";text="另存为网页";left=163;top=1050;right=276;bottom=1080;align="left";bgcolor=-5197169;db=1;dl=1;font=LOGFONT(h=-13);iconStyle={align="left";font=LOGFONT(h=-13;name='FontAwesome');padding={left=10}};iconText='\uF0C7';notify=1;textPadding={left=25};z=3};
+btnSaveMD={cls="plus";text="保存笔记(Ctrl+S)";left=0;top=1050;right=145;bottom=1080;align="left";bgcolor=-5197169;db=1;dl=1;font=LOGFONT(h=-13);iconStyle={align="left";font=LOGFONT(h=-13;name='FontAwesome');padding={left=10}};iconText='\uF0C7';notify=1;textPadding={left=25};z=2};
+dropdown={cls="plus";left=283;top=1050;right=436;bottom=1080;bgcolor=15132390;border={color=-3546113;width=2};db=1;dl=1;editable=1;font=LOGFONT(h=-13);forecolor=16777215;iconStyle={align="right";font=LOGFONT(name='FontAwesome');padding={right=8}};iconText='\uF078';notify=1;paddingRight=28;textPadding={left=2;top=6;right=1;bottom=2};z=9};
+menuItem={cls="plus";text="默认样式";left=283;top=1010;right=436;bottom=1050;bgcolor=11525002;border={left=1;right=1;bottom=1;color=-3546113};font=LOGFONT(name='FontAwesome';charset=0);tabstop=1;z=8};
+menuItem2={cls="plus";text="日志样式";left=283;top=970;right=436;bottom=1010;bgcolor=11525002;border={left=1;right=1;bottom=1;color=-3546113};font=LOGFONT(name='FontAwesome');tabstop=1;z=7};
+menuItem3={cls="plus";text="网站样式";left=283;top=930;right=436;bottom=970;bgcolor=11525002;border={left=1;right=1;bottom=1;color=-3546113};font=LOGFONT(name='FontAwesome');tabstop=1;z=6};
+menuItem4={cls="plus";text="Latex样式";left=283;top=890;right=436;bottom=930;bgcolor=11525002;border={left=1;right=1;bottom=1;color=-3546113};font=LOGFONT(name='FontAwesome');tabstop=1;z=5};
+menuItem5={cls="plus";text="幻灯片样式";left=283;top=850;right=436;bottom=890;bgcolor=11525002;border={left=1;right=1;bottom=1;color=-3546113};font=LOGFONT(name='FontAwesome');tabstop=1;z=10};
+tab={cls="tab";left=0;top=0;right=1920;bottom=1050;db=1;dl=1;dr=1;dt=1;edge=1;z=1}
+)
+/*}}*/
+
+import win.ui.atom 
+var atom,hwnd = winform.atom("C32B8FF9-C8DF-4183-AD06-355AACB74652.DoubleCols"); 
+if(!atom){
+	win.show(hwnd)
+	return win.setForeground(hwnd); 
+}
+
+winform.btnSaveMD.skin({
+	background={
+		active=0xFFD3E0BC;
+		default=0x668FB2B0;
+		disabled=0xFFCCCCCC;
+		focus=0xFFE3E3E3;
+		hover=0xFF928BB3
+	};
+	color={
+		default=0xFF000000;
+		disabled=0xFF6D6D6D
+	}
+})
+
+winform.btnSaveHTML.skin({
+	background={
+		active=0xFFD3E0BC;
+		default=0x668FB2B0;
+		disabled=0xFFCCCCCC;
+		focus=0xFFE3E3E3;
+		hover=0xFF928BB3
+	};
+	color={
+		default=0xFF000000;
+		disabled=0xFF6D6D6D
+	}
+})
+
+winform.btnOpenMD.skin(
+	background={
+		active=0xFFD3E0BC;
+		default=0x668FB2B0;
+		disabled=0xFFCCCCCC;
+		focus=0xFFE3E3E3;
+		hover=0xFF928BB3
+	};
+	color={
+		default=0xFF000000;
+		disabled=0xFF6D6D6D
+	}
+)
+
+winform.btnOpenHtml.skin(
+	background={
+		active=0xFFD3E0BC;
+		default=0x668FB2B0;
+		disabled=0xFFCCCCCC;
+		focus=0xFFE3E3E3;
+		hover=0xFF928BB3
+	};
+	color={
+		default=0xFF000000;
+		disabled=0xFF6D6D6D
+	}
+)
+
+winform.btnNew.skin(
+	background={
+		active=0xFFD3E0BC;
+		default=0x668FB2B0;
+		disabled=0xFFCCCCCC;
+		focus=0xFFE3E3E3;
+		hover=0xFF928BB3
+	};
+	color={
+		default=0xFF000000;
+		disabled=0xFF6D6D6D
+	}
+)
+
+// 菜单
+import win.ui.tabs;
+var menu = win.ui.tabs(winform.menuItem,winform.menuItem2,winform.menuItem3,winform.menuItem4,winform.menuItem5)
+menu.skin( { 
+	foreground={
+		default = 0xFFFFFFFF;
+		hover= 0xFF8ADBAF;
+	};
+	checked = { 
+		foreground={
+			default = 0xFFDB8A8E;
+			hover= 0xFF8ADBAF;
+		}; 
+	}
+})
+
+import win.dlg.message;
+var msgDlg = win.dlg.message(winform); 
+
+import fsys.dlg;
+import fsys.codepage;
+
+// tab新增页面
+var lbBrowser = winform.tab.loadForm("\dlg\markdeepPreview.aardio");
+lbBrowser.show();
+var orphanWin = winform.tab.add(text="外部文档";right=759;bottom=469);
+orphanWin.show();
+
+if(..mainForm.plusleftHwnd){
+	win.setParent(..mainForm.plusleftHwnd,orphanWin.hwnd);
+	win.modifyStyle(..mainForm.plusleftHwnd,0xC00000/*_WS_CAPTION*/);
+}
+
+import web.view;
+var wb = web.view(lbBrowser);; 
+
+var saveCall = function(result){
+	if(..configMain.openedMDPath){
+		..string.save(..configMain.openedMDPath, result);
+		winform.text = "PandaNotes - " + ..configMain.openedMDPath;
+		winform.msgSmile('成功保存markdown文件到'+ ..configMain.openedMDPath,1000)
+	}
+	else {
+		var path = fsys.dlg.save("Markdown文件|*.md|文本文件|*.txt||","另存为Markdown文件|",io.fullpath("/Notes"),winform.hwnd)
+		if(!path)return;
+		string.save(path,result);
+		..configMain.openedMDPath = path;
+		winform.text = "PandaNotes - " + ..configMain.openedMDPath;
+		winform.msgSmile('成功保存markdown文件到'+ path,1000)
+	}
+}
+
+
+wb.export(
+	saveMarkdown = function(result){
+		saveCall(result);
+	};
+	newMarkdown = function(result){
+		saveCall(result);
+		..configMain.openedMDPath = null;
+		winform.text = "PandaNotes - " + "未保存*";
+		winform.msgSmile("已新建，关闭前请保存",1000)
+	};	
+);
+
+//<!-- Markdeep: --><style class="fallback">body{visibility:hidden;white-space:pre;font-family:monospace}</style><script src="markdeep.min.js"></script><script src="https://casual-effects.com/markdeep/latest/markdeep.min.js?"></script><script>window.alreadyProcessedMarkdeep||(document.body.style.visibility="visible")</script>
+//<script>window.markdeepOptions = {mode: 'script'};</script><script src="markdeep.min.js"></script><script src="https://morgan3d.github.io/markdeep/latest/markdeep.min.js"></script>
+
+wb.go(io.fullpath("/data/embededMarkdeepPreview.html"));
+wb.wait("");
+
+
+loadMd = function(path){
+	if(!path)return;
+	var str  = string.load(path);
+	if( !..string.isUtf8(str) ) str = string.fromto(str,0,65001);
+	wb.xcall('initText',str);
+}
+
+import win.ui.menu;
+import win.clip.html;
+var cbHtml = win.clip.html();
+
+if(..configMain.openedMDPath && io.exist(..configMain.openedMDPath)){
+	loadMd(io.exist(..configMain.openedMDPath));
+	winform.text = "PandaNotes - " + ..configMain.openedMDPath;
+}
+else {
+	..configMain.openedMDPath = null;
+	winform.text = "PandaNotes - " + "未保存*";
+}
+
+
+// 退出程序前让双开的应用退出
+import process;
+winform.onClose = function(hwnd,message,wParam,lParam){
+	var result = wb.xcall('saveMD');
+	saveCall(result);
+/*
+	if(..configMain.openedMDPath){
+		..string.save(..configMain.openedMDPath, result);
+	}
+	else {
+		if(winform.msgAsk("是否保存文件？")){
+			winform.btnSaveMD.oncommand();
+		}
+	}
+*/
+	
+	if(..mainForm.enterFromOutside){
+		if(..mainForm.editPid){
+			process.kill(..mainForm.editPid);
+		}
+	}
+	
+	..mainForm.enterFromDirect = false;
+	..mainForm.enterFromOutside = false;
+}
+
+winform.tab.onnotify = function(id,code,ptr){
+	if(..mainForm.plusleftHwnd){		
+		if(code==0xFFFFFDD9/*_TCN_SELCHANGE*/) {
+			// 切换tab时触发
+			winform.tab.redraw();
+		}
+		var rect = win.getClientRect(winform.tab.hwnd,true);
+		win.setRect(..mainForm.plusleftHwnd,rect)
+	}
+}
+
+winform.wndproc = function(hwnd,message,wParam,lParam){
+	select( message ) { 
+		case 5/*_WM_SIZE*/{
+			//调整窗口
+			if(..mainForm.plusleftHwnd){
+				var rect = win.getClientRect(winform.tab.hwnd,true)
+				win.setRect(..mainForm.plusleftHwnd,rect)
+				winform.tab.redraw();
+			}
+		}
+		else{
+		}
+	}
+	//无返回值则继续调用默认回调函数
+}
+
+winform.onDropFiles = function(files){
+	import console;
+	console.log(files[1])
+	
+	if(#files = 1){
+		loadMd(files[1])
+	}
+}
+
+var markdeepHead = /**
+<meta charset="utf-8">
+**/;
+
+var markdeepHeadJournal = /**
+<meta charset="utf-8">
+<link rel="stylesheet" href="../data/src/journal.css">
+<link rel="stylesheet" href="https://casual-effects.com/markdeep/latest/journal.css?">
+**/;
+
+var markdeepHeadWebsite = /**
+<meta charset="utf-8">
+<link rel="stylesheet" href="../data/src/website.css">
+<link rel="stylesheet" href="https://casual-effects.com/markdeep/latest/website.css?">
+**/;
+
+var markdeepHeadLatex = /**
+<meta charset="utf-8">
+<link rel="stylesheet" href="../data/src/latex.css">
+<link rel="stylesheet" href="https://morgan3d.github.io/markdeep/latest/latex.css?">
+**/; 
+
+var markdeepHeadSlide = /**
+<meta charset="utf-8">
+<link rel="stylesheet" href="../data/src/slides.css?">
+<link rel="stylesheet" href="https://casual-effects.com/markdeep/latest/slides.css?">
+**/;
+
+var markdeepTail = /**
+<!-- Markdeep: -->
+<script>window.markdeepOptions = {mode: 'markdeep'};</script>
+<script src="../data/src/markdeep.min.js" charset="utf-8"></script>
+<script src="https://morgan3d.github.io/markdeep/latest/markdeep.min.js" charset="utf-8"></script>
+**/;
+
+var markdeepTailJournal = /**
+<style class="fallback">body{visibility:hidden}</style>
+<script>markdeepOptions={tocStyle:'long'};</script>
+<!-- Markdeep: -->
+<script src="../data/src/markdeep.min.js" charset="utf-8"></script>
+<script src="https://morgan3d.github.io/markdeep/latest/markdeep.min.js" charset="utf-8"></script>
+**/;
+
+var markdeepTailWebsite =  /**
+<style class="fallback">body{visibility:hidden}</style>
+<script>markdeepOptions={tocStyle:'long'};</script>
+<!-- Markdeep: -->
+<script src="../data/src/markdeep.min.js" charset="utf-8"></script>
+<script src="https://morgan3d.github.io/markdeep/latest/markdeep.min.js" charset="utf-8"></script>
+**/;; 
+
+var markdeepTailLatex = /**
+<!-- Markdeep: -->
+<script src="../data/src/markdeep.min.js" charset="utf-8"></script>
+<script src="https://morgan3d.github.io/markdeep/latest/markdeep.min.js" charset="utf-8"></script>
+**/;
+
+var markdeepTailSlide = /**
+<script>markdeepOptions={tocStyle:'none'}</script>
+<style class="fallback">body{visibility:hidden}</style>
+<!-- Markdeep: -->
+<script src="../data/src/markdeep.min.js" charset="utf-8"></script>
+<script src="https://morgan3d.github.io/markdeep/latest/markdeep.min.js" charset="utf-8"></script>
+**/;
+
+var htmlHead = markdeepHead;
+var htmlTail = markdeepTail; 
+
+winform.btnSaveHTML.oncommand = function(id,event){
+	var result = wb.xcall('saveMD');
+	var sourceCode = string.concat(htmlHead,result,htmlTail); 
+	var path = fsys.dlg.save("HTML文件|*.html||","另存为HTML文件",io.fullpath("/Notes"),winform.hwnd)
+	if(!path)return;
+	..configMain.htmlPath = path;
+	string.save(path,sourceCode);
+	var okOrNot = win.msgboxTest("是否查看刚刚保存的网页文件","查看文件");
+	if(okOrNot){
+		wb.xcall('exploerHtmls',..configMain.htmlPath);
+	}
+}
+
+winform.btnSaveMD.oncommand = function(id,event){
+	var result = wb.xcall('saveMD');
+	var path = fsys.dlg.save("Markdown文件|*.md|文本文件|*.txt||","另存为Markdown文件|",io.fullpath("/Notes"),winform.hwnd)
+	if(!path)return;
+	string.save(path,result);
+	..configMain.openedMDPath = path;
+	winform.text = "PandaNotes - " + ..configMain.openedMDPath;
+	winform.msgSmile('成功保存markdown文件到'+ path,1000)
+} 
+
+// 用户点选菜单项触发此事件,strip参数是点选的控件
+menu.onOk = function(strip){
+	winform.dropdown.setFocus(menu.selText)
+	select(menu.selText) {
+		case "默认样式" {
+			htmlHead = markdeepHead;
+			htmlTail = markdeepTail; 
+		}
+		case "日志样式" {
+			htmlHead = markdeepHeadJournal;
+			htmlTail = markdeepTailJournal;
+		}
+		case "网站样式" {
+			htmlHead = markdeepHeadWebsite;
+			htmlTail = markdeepTailWebsite;
+		}
+		case "Latex样式" {
+			htmlHead = markdeepHeadLatex;
+			htmlTail = markdeepTailLatex;
+		}
+		case "幻灯片样式" {
+			htmlHead = markdeepHeadSlide;
+			htmlTail = markdeepTailSlide;
+		}
+		else {
+			htmlHead = markdeepHead;
+			htmlTail = markdeepTail; 
+		}
+	}
+}
+
+// 切换到弹出列表模式,并使用参数指定的控件处理键盘事件
+menu.initPopup(winform.dropdown.editBox)
+
+// 禁止共享编辑框外观状态(focus状态除外)
+winform.dropdown.editState = false
+winform.dropdown.skin({
+	background = { hover = 0xFFF78987 }
+	checked = { 
+		iconText = '\uF077';
+	}  
+})
+
+// 显示弹出菜单，弹出菜单会自动修改winform.dropdown的checked属性为菜单打开状态
+winform.dropdown.oncommand = function(id,event){ 
+	if(winform.dropdown.checked ){
+		menu.selText = winform.dropdown.text
+		menu.popup(true,winform.dropdown,'up')
+	}  
+}
+
+winform.dropdown.setFocus("默认样式")
+
+
+winform.btnOpenMD.oncommand = function(id,event){
+	var path = fsys.dlg.open("Markdown文件|*.md|文本文件|*.txt||","打开Markdown文件|",,winform.hwnd) 
+	if(!path)return;
+	loadMd(path);
+	..configMain.openedMDPath = path;
+	winform.text = "PandaNotes - " + ..configMain.openedMDPath;
+	winform.msgSmile('已加载markdown文件',1000)
+}
+
+winform.btnOpenHtml.oncommand = function(id,event){
+	var path = fsys.dlg.open("HTML文件|*.html||","打开HTML文件",,winform.hwnd)
+	if(!path)return;
+	wb.xcall('exploerHtmls',path);
+}
+
+import win.ui.tooltip; 
+//在所有者窗口 winform 上创建 tooltip 提示控件 
+var tooltipCtrl = win.ui.tooltip( winform );
+//添加一个自动模式的控件提示（TOOLINFO 对象，简称 tool ）
+var toolInfoPlus = tooltipCtrl.addTool(winform.btnSaveHTML,'建议保存在默认的位置，否则格式可能不正确！\n可在打开的html文件中右键，打印为pdf来固定格式' )
+
+winform.btnNew.oncommand = function(id,event){
+	var result = wb.xcall('saveMD');
+	saveCall(result);
+	..configMain.openedMDPath = null;
+	winform.text = "PandaNotes - " + "未保存*";
+	var str = " ";
+	wb.xcall('initText',str);
+}
+
+winform.show( 3/*_SW_MAXIMIZE*/ );
+win.loopMessage();
+return winform;

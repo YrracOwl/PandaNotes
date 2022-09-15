@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+  <meta charset="utf-8">
+  <link href="src/fonts/remixicon.css" rel="stylesheet">
+  <!-- <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet"> -->
+  <link href="src/context-menu.min.css" rel="stylesheet">
+  <style>
+    html,body {
+      height:99%;
+      /* background-color: #F0F0F0; */
+    }
+    main {
+      height: 99%;
+      overflow-y: hidden;
+    }
+    #main {
+      display: flex;
+      flex-flow: row;
+      width: 100%;
+    }
+    #markdeep_input {
+        flex: 1 1 45%;
+        width: 225px;
+        height: 97%;
+        /* font-family: monospace; */
+        font-size: medium;
+        font-family: -apple-system, monospace, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", "Helvetica Neue", Helvetica, Tahoma, Arial,"PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        margin-right: 10px;
+    }
+    #preview {
+      flex: 1 1 55%;
+      width: 275px;
+    }
+    #markdeep_preview {
+      height: 100%;
+      /* width: 100%; */
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 10px;
+    }
+
+    .md p {
+        font-size: inherit;
+        font-weight: normal;
+        margin: 0 0 10px;
+    }
+
+    .md h1, .md h2, .md h3 {
+        margin-top: 0;
+        padding-top: 0;
+    }
+
+    .md h1:before, .md h2:before, .md h3:before {
+        display: none;
+    }
+
+    .md h1 {
+        font-size: 21px;
+    }
+
+    .md h2 {
+        font-size: 18px;
+    }
+
+    .md h3 {
+        font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <main id="main">
+    <textarea id='markdeep_input'></textarea>
+    <section id="preview" >
+      <div id="markdeep_preview"></div>
+      <!-- <iframe id="markdeep_preview" frameborder="0"></iframe> -->
+    </section>
+  </main>
+
+  <a href="file:///" target="_blank" style="display: none;" id="exploerHtml">模拟点击打开网页</a>
+
+  <script>window.markdeepOptions = {mode: 'script'};</script>
+  <script type ="text/javascript" src="src/jquery.min.js"></script>
+  <!-- <script type ="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script> -->
+  <script type ="text/javascript" src="src/markdeep.min.js"></script>
+  <!-- <script type ="text/javascript" src="https://casual-effects.com/markdeep/latest/markdeep.min.js"></script> -->
+  <script type ="text/javascript" src="src/MathJax.js"></script>
+  <!-- <script type ="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+  <script type ="text/javascript" src="src/context-menu.min.js"></script>
+  <script src="src/hotkeys.min.js"></script>
+  <!-- <script src="https://unpkg.com/hotkeys-js/dist/hotkeys.min.js"></script> -->
+  <script type ="text/javascript" src="src/pandanotes.js"></script>
+</body>
+  

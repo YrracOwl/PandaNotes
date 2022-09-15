@@ -1,0 +1,239 @@
+import fonts.fontAwesome;
+import win.ui.tooltip;
+import win.ui;
+/*DSG{{*/
+SCMainForm = win.form(text="PandaNotes";right=959;bottom=639;border="none";clipch=1)
+SCMainForm.add(
+ColorRevert={cls="plus";left=0;top=264;right=35;bottom=288;align="left";color=3947580;dl=1;dt=1;font=LOGFONT(h=-13);iconStyle={align="left";font=LOGFONT(h=-21;name='FontAwesome');padding={left=8}};iconText='\uF042';notify=1;textPadding={left=25};z=4};
+ImgShow={cls="plus";left=40;top=40;right=920;bottom=576;ah=1;aw=1;db=1;dl=1;dr=1;dt=1;notify=1;z=1};
+ImgTitle={cls="plus";left=304;top=576;right=656;bottom=618;border={bottom=1;color=-6908266};db=1;dl=0.32;dr=0.32;editable=1;font=LOGFONT(h=-20);textPadding={top=6};z=2};
+SelArea={cls="plus";left=0;top=224;right=37;bottom=250;align="left";color=3947580;dl=1;dt=1;font=LOGFONT(h=-13);iconStyle={align="left";font=LOGFONT(h=-20;name='FontAwesome');padding={left=8}};iconText='\uF030';notify=1;textPadding={left=25};z=3};
+btnSave={cls="plus";left=0;top=296;right=37;bottom=326;align="left";color=3947580;disabled=1;dl=1;dt=1;font=LOGFONT(h=-13);iconStyle={align="left";font=LOGFONT(h=-21;name='FontAwesome');padding={left=9;top=2}};iconText='\uF0C7';notify=1;z=5}
+)
+/*}}*/
+
+SCMainForm.btnSave.skin({
+	color={
+		active=0xFF00FF00;
+		default=0xFF3C3C3C;
+		disabled=0xFF6D6D6D;
+		hover=0xFFFF0000
+	}
+})
+
+import win.ui.atom 
+var atom,hwnd = SCMainForm.atom("3C59547B-BD3F-4ED7-9E58-4D0B17EA2D09.ScreenCapture"); 
+if(!atom){
+	win.show(hwnd)
+	return win.setForeground(hwnd); 
+}
+
+// 应用自绘的窗口标题栏
+//import win.ui.simpleWindow3;
+//var wndFrame = win.ui.simpleWindow3(SCMainForm,16,38,35,38,0X33000000,0X00000000);
+import win.ui.simpleWindow;
+var wndFrame = win.ui.simpleWindow(SCMainForm,16,38,35,38);
+wndFrame.skin(
+	background = { 
+		hover = 0xff99ffcc;
+		active = 0xffff6666; 
+		default = 0x00000000; 
+	}
+	color = { 
+		hover = 0xff666666;
+		active = 0xffffffff; 
+		default = 0xff000000; 
+	}
+)
+
+SCMainForm.ColorRevert.skin({
+	color={
+		active=0xFF00FF00;
+		default=0xFF3C3C3C;
+		disabled=0xFF6D6D6D;
+		hover=0xFFFF0000
+	}
+})
+
+SCMainForm.SelArea.skin({
+	color={
+		active=0xFF00FF00;
+		default=0xFF3C3C3C;
+		disabled=0xFF6D6D6D;
+		hover=0xFFFF0000
+	}
+})
+
+SCMainForm.ImgShow.onDrawContent = function(graphics,rc,txtColor,rcContent,foreColor){
+	if(..tmpBmp){
+		graphics.drawImageRect(..tmpBmp,SCMainForm.ImgShow.width/2-..tmpBmpWidth/2,SCMainForm.ImgShow.height/2-..tmpBmpHeight/2,..tmpBmpWidth,..tmpBmpHeight)
+	}
+}
+
+SCMainForm.SelArea.oncommand = function(id,event){
+	SCMainForm.show(false);
+	//balloonTipCtrl.trackPopup(false)
+	//SCMainForm.hitMin();
+	
+	//截屏函数
+	var tmpHwnd = win.getDesktop();
+	import mouse.screenArea;
+	var screenArea = mouse.screenArea(tmpHwnd);
+	screenArea.onSelectionChanged = function(rc){
+		import gdip.snap;
+		var bmp = gdip.snap(screenArea.hwnd,rc.xywh());
+		..tmpBmp = bmp.clone();
+		..tmpBmpWidth = bmp.width;
+		..tmpBmpHeight = bmp.height;
+		SCMainForm.ImgShow.background = 0xFFF0F0F0; //Clear Background
+		SCMainForm.ImgShow.x = SCMainForm.ImgShow.width/2-..tmpBmpWidth/2;
+		SCMainForm.ImgShow.y = SCMainForm.ImgShow.height/2-..tmpBmpHeight/2;
+		SCMainForm.ImgShow.setForeground(bmp);
+		owner.close();
+	}
+	screenArea.doModal();
+	
+	SCMainForm.ImgTitle.text = string.random(16);
+	SCMainForm.btnSave.disabled = false;
+	
+	SCMainForm.show(true)
+	SCMainForm.redraw();
+	win.setForeground(SCMainForm.hwnd);
+	win.setActive(SCMainForm.hwnd)
+	win.setFocus(SCMainForm.ImgTitle.hwnd)
+}
+
+SCMainForm.ColorRevert.oncommand = function(id,event){
+	import gdip.imageAttributes;
+	var attr = gdip.imageAttributes();
+	attr.setColorMatrix({
+		-1;0;0;0;0;
+		0;-1;0;0;0;
+		0;0;-1;0;0;
+		0;0;0;1;0;
+		1;1;1;0;1
+	})
+	..tmpBmp = ..tmpBmp.copy(attr);
+	SCMainForm.ImgShow.background = 0xFFF0F0F0; //Clear Background
+	SCMainForm.ImgShow.foreground = null;
+    SCMainForm.ImgShow.redraw();
+}
+
+SCMainForm.wndproc = function(hwnd,message,wParam,lParam){
+	select( message ) { 
+		case 0x20A/*_WM_MOUSEWHEEL*/{
+			//获取鼠标滚轮的方向以改变图片大小
+			var fwKeys,delta = win.getMessagePos(wParam);
+			var ratio = (SCMainForm.ImgShow.width*SCMainForm.ImgShow.height)/(SCMainForm.width*SCMainForm.height)*1; 
+			if(..tmpBmp){
+				if(delta<0){
+					..tmpBmpWidth = ..tmpBmpWidth*ratio;
+					..tmpBmpHeight = ..tmpBmpHeight*ratio;
+    			}
+    			else {
+					..tmpBmpWidth = ..tmpBmpWidth/ratio;
+					..tmpBmpHeight = ..tmpBmpHeight/ratio;
+    			}	
+			}
+    		SCMainForm.ImgShow.background = 0xFFF0F0F0; //Clear Background
+			SCMainForm.ImgShow.foreground = null;
+    		SCMainForm.ImgShow.redraw();
+			}
+		case 5/*_WM_SIZE*/{
+			//窗口尺寸改变后重绘图片
+			SCMainForm.ImgShow.background = 0xFFF0F0F0; //Clear Background
+			SCMainForm.ImgShow.foreground = null;
+    		SCMainForm.ImgShow.redraw();
+    		SCMainForm.redraw();
+		}
+		else{			
+		}
+	}
+	//无返回值则继续调用默认回调函数
+}
+
+SCMainForm.beforeShowWindow = function(shown,status){ 
+	if(..tmpBmp){
+		SCMainForm.ImgShow.background = 0xFFF0F0F0; //Clear Background
+		SCMainForm.ImgShow.x = SCMainForm.ImgShow.width/2-..tmpBmp.width/2;
+		SCMainForm.ImgShow.y = SCMainForm.ImgShow.height/2-..tmpBmp.height/2;
+		SCMainForm.ImgShow.setForeground(bmp);
+		SCMainForm.ImgShow.redraw();
+	}
+}
+
+/*
+import key.hotkey;
+var superHotkey = key.hotkey(SCMainForm); 
+superHotkey.reg(
+	"CTRL","ALT","A",
+	SCMainForm.SelArea.oncommand 
+)
+*/
+
+/*
+var hkId; 
+SCMainForm.settings.oncommand = function(id,event){
+	//删除之前注册的热键,hkId如果是null空值，此函数可忽略不做任何操
+	SCMainForm.unreghotkey(hkId);
+	
+	//重新注册系统热键;
+	hkId = SCMainForm.reghotkey(SCMainForm.SelArea.oncommand
+		//winform.hotkeyShow.gethotkey()刚好返回2个值对应最后两个参数
+		,SCMainForm.hotkeyShow.gethotkey()  
+	);
+}
+*/
+
+// ToolTips设置
+import win.ui.tooltip; 
+SCMainForm.tooltipCtrl = win.ui.tooltip( SCMainForm );//在窗口上创建tooltip控件 
+SCMainForm.tooltipCtrl.add(
+	ColorRevert = "点击反色";
+	SelArea = "点击截图";
+)
+
+SCMainForm.btnSave.oncommand = function(id,event){
+	var bmp = ..tmpBmp.clone();
+	var savePath = string.concat("/Notes/Pics/",SCMainForm.ImgTitle.text,".png"); 
+	if(io.exist("/Notes/Pics")){
+		bmp.save(savePath);
+	}
+	else {
+		io.createDir("/Notes/Pics")
+		bmp.save(savePath);
+	}
+
+	//var ImgPath = io.fullpath(savePath);
+	var ImgPath = string.concat("../Notes/Pics/",SCMainForm.ImgTitle.text,".png");
+	var mdImgPath = string.format("![Figure [states]: %s](%s)",SCMainForm.ImgTitle.text,ImgPath);
+	import win.clip;
+	win.clip.write(mdImgPath,"no");
+	SCMainForm.msgOk('图片已保存到/Notes/Pics文件夹\n在编辑器中粘贴Ctrl+V即可预览！',1000);
+}
+
+SCMainForm.onClose = function(hwnd,message,wParam,lParam){
+    SCMainForm.show(false);
+    return true; 
+}
+
+//设置窗口缩放范围
+import win.ui.minmax;
+win.ui.minmax(SCMainForm);
+
+import win.ui.accelerator;
+var accelerator = win.ui.accelerator({
+
+    { 
+        ctrl = true; vkey = 'S'#; 
+        oncommand = function() SCMainForm.btnSave.oncommand(); 
+    };  
+    
+},SCMainForm );
+
+import win.dlg.message;
+var msgDlg = win.dlg.message(SCMainForm); 
+
+//SCMainForm.show();
+win.loopMessage();
+return SCMainForm;
