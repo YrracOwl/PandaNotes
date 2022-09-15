@@ -1,5 +1,6 @@
 ## 项目简介
 [点我下载.exe](https://github.com/YrracOwl/PandaNotes/releases/latest)
+
 本项目是一个本地的markdown编辑器，实现了实时预览的功能，记笔记界面如下图所示。
 
 ![Figure [states]: PN-记笔记界面](Src/Pics/PN-记笔记界面.png)
