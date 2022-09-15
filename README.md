@@ -21,14 +21,14 @@
 如上图所示，鼠标放上即可显示提示，分别实现了(从关闭按钮开始瞬时间介绍)
 
 
-[x] 关闭程序
-[ ] 设置
-[x] markdown编辑器
-[x] 双开应用到“外部文档”栏
-[x] 截图，可反色，保存时复制图片路径
-[x] 置顶主界面
+- [x] 关闭程序
+- [ ] 设置
+- [x] markdown编辑器
+- [x] 双开应用到“外部文档”栏
+- [x] 截图，可反色，保存时复制图片路径
+- [x] 置顶主界面
 
 
 ## 鸣谢
 
-本项目的诞生离不开[markdeep](https://casual-effects.com/markdeep/)与[aardio](https://aardio.com)
+本项目的诞生离不开[markdeep](https://casual-effects.com/markdeep/)与[aardio](https://aardio.com)，以及[webview2](https://developer.microsoft.com/en-us/microsoft-edge/webview2/)
