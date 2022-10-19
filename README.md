@@ -33,3 +33,12 @@
 ## 鸣谢
 
 本项目的诞生离不开[markdeep](https://casual-effects.com/markdeep/)与[aardio](https://aardio.com)，以及[webview2](https://developer.microsoft.com/en-us/microsoft-edge/webview2/)
+
+## Todo
+
+- [ ] 多标签页文档的打开
+- [ ] 保存时采用其他的通知方式，避免在通知时无法响应主页面
+- [ ] 打包出hugo的bundle类型post，将图片和.md文件打包到独立的文件夹;集成git命令，一键发布。
+- [ ] 主界面添加最小化按钮
+- [ ] 增加托盘图标
+- [ ] 截图界面保存时，自动复制的Figure代码需要将`Figure [states]`中的states修改为文件名
