@@ -9,7 +9,7 @@ ImgShow={cls="plus";left=40;top=40;right=920;bottom=576;ah=1;aw=1;db=1;dl=1;dr=1
 ImgTitle={cls="plus";left=304;top=576;right=656;bottom=618;border={bottom=1;color=-6908266};db=1;dl=0.32;dr=0.32;editable=1;font=LOGFONT(h=-20);textPadding={top=6};z=2};
 SelArea={cls="plus";left=0;top=224;right=37;bottom=250;align="left";color=3947580;dl=1;dt=1;font=LOGFONT(h=-13);iconStyle={align="left";font=LOGFONT(h=-20;name='FontAwesome');padding={left=8}};iconText='\uF030';notify=1;textPadding={left=25};z=3};
 btnSave={cls="plus";left=0;top=296;right=37;bottom=326;align="left";color=3947580;disabled=1;dl=1;dt=1;font=LOGFONT(h=-13);iconStyle={align="left";font=LOGFONT(h=-21;name='FontAwesome');padding={left=9;top=2}};iconText='\uF0C7';notify=1;z=5};
-log={cls="static";left=8;top=624;right=480;bottom=648;transparent=1;z=6}
+log={cls="static";text="Ctrl+S即可保存图片并写入剪贴板...";left=8;top=624;right=480;bottom=648;transparent=1;z=6}
 )
 /*}}*/
 
